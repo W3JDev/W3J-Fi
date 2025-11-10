@@ -1,1 +1,1090 @@
 # W3J-Fi
+
+
+# W3JDev United - Comprehensive Product Specification
+## Combined Lottery & Polling Application
+
+> **Generated:** 2025-11-10  
+> **Version:** 1.0.0  
+> **License:** MIT  
+> **Source Repositories:**
+> - [log-lottery](https://github.com/LOG1997/log-lottery) by LOG1997
+> - [random-name-picker](https://github.com/icelam/random-name-picker) by icelam  
+> - [OpenStreamPoll](https://github.com/yoanbernabeu/OpenStreamPoll) by yoanbernabeu
+
+---
+
+## Table of Contents
+1. [Executive Summary](#executive-summary)
+2. [Product Overview](#product-overview)
+3. [Technical Architecture](#technical-architecture)
+4. [Feature Specifications](#feature-specifications)
+5. [Data Models](#data-models)
+6. [API Specifications](#api-specifications)
+7. [UI/UX Design](#ui-ux-design)
+8. [Implementation Roadmap](#implementation-roadmap)
+
+---
+
+## 1. Executive Summary
+
+**W3JDev United** is an all-in-one web application combining advanced lottery/random picker functionality with real-time streaming poll capabilities. Built for events, streamers, and organizations, it provides:
+
+- **3D Animated Lottery** (inspired by log-lottery)
+- **Simple Name Picker** (inspired by random-name-picker)
+- **Live Streaming Polls** (inspired by OpenStreamPoll)
+- **Unified English Interface** with w3jdev branding
+
+### Key Differentiators
+- Multi-mode operation (3D fancy vs 2D simple)
+- Real-time engagement tools for streamers
+- OBS Studio integration
+- Offline-first architecture with IndexedDB
+- No backend required for lottery features
+- Optional backend for poll persistence
+
+---
+
+## 2. Product Overview
+
+### 2.1 Target Users
+1. **Event Organizers** - Annual parties, conferences, corporate events
+2. **Streamers** - Twitch/YouTube content creators
+3. **Educators** - Classroom participation tools
+4. **Community Managers** - Discord/Slack community engagement
+
+### 2.2 Core Use Cases
+
+#### Use Case 1: Company Annual Event Lottery
+**Actor:** HR Manager  
+**Goal:** Run a fair lottery for 500 employees to win prizes  
+**Flow:**
+1. Import employee list from Excel (500 rows)
+2. Configure 5 prize tiers (Grand Prize â†’ Consolation)
+3. Display 3D sphere animation on projector
+4. Draw winners with animation + confetti
+5. Export winner list to Excel
+
+**Source:** Derived from [`log-lottery/src/store/prizeConfig.ts`](https://github.com/LOG1997/log-lottery/blob/main/src/store/prizeConfig.ts) and [`log-lottery/src/store/personConfig.ts`](https://github.com/LOG1997/log-lottery/blob/main/src/store/personConfig.ts)
+
+#### Use Case 2: Quick Random Name Pick
+**Actor:** Teacher  
+**Goal:** Randomly select a student for class presentation  
+**Flow:**
+1. Enter 30 student names in settings
+2. Click "Draw" button
+3. Slot machine animation plays
+4. Winner announced with sound effect
+
+**Source:** Derived from [`random-name-picker/src/assets/js/Slot.ts`](https://github.com/icelam/random-name-picker/blob/master/src/assets/js/Slot.ts)
+
+#### Use Case 3: Live Stream Poll
+**Actor:** Twitch Streamer  
+**Goal:** Engage 1000 live viewers with a poll  
+**Flow:**
+1. Create poll: "Which game should I play next?"
+2. Add 5 options (up to 5 max)
+3. Set duration: 60 seconds
+4. Display poll overlay in OBS
+5. Show live vote counts
+6. Reveal results with fireworks effect
+
+**Source:** Derived from [`OpenStreamPoll/src/Entity/Poll.php`](https://github.com/yoanbernabeu/OpenStreamPoll/blob/main/src/Entity/Poll.php) and [`OpenStreamPoll/src/Controller/PollController.php`](https://github.com/yoanbernabeu/OpenStreamPoll/blob/main/src/Controller/PollController.php)
+
+---
+
+## 3. Technical Architecture
+
+### 3.1 Stack Overview
+
+```
+Frontend:
+â”œâ”€â”€ Vue 3 (Composition API + TypeScript)
+â”œâ”€â”€ Three.js (3D lottery sphere)
+â”œâ”€â”€ Pinia (State management)
+â”œâ”€â”€ Vite (Build tool)
+â”œâ”€â”€ DaisyUI + Tailwind CSS
+â”œâ”€â”€ Web Animations API
+â”œâ”€â”€ AudioContext API (sound effects)
+â””â”€â”€ Canvas Confetti
+
+Backend (Optional - for Polls):
+â”œâ”€â”€ PHP 8.3 + Symfony 7.2
+â”œâ”€â”€ Doctrine ORM
+â”œâ”€â”€ SQLite Database
+â”œâ”€â”€ FrankenPHP Server
+â””â”€â”€ Docker Support
+
+Real-time:
+â”œâ”€â”€ Server-Sent Events (SSE) for poll updates
+â””â”€â”€ WebSocket (future enhancement)
+```
+
+### 3.2 Architecture Diagram
+
+```
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                   W3JDev United App                     â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚                                                         â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” â”‚
+â”‚  â”‚   Lottery    â”‚  â”‚  Name Picker â”‚  â”‚  Live Polls  â”‚ â”‚
+â”‚  â”‚  (3D Mode)   â”‚  â”‚  (2D Simple) â”‚  â”‚ (Streaming)  â”‚ â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ â”‚
+â”‚         â”‚                 â”‚                  â”‚          â”‚
+â”‚         â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜          â”‚
+â”‚                         â”‚                               â”‚
+â”‚                    â”Œâ”€â”€â”€â”€â–¼â”€â”€â”€â”€â”                         â”‚
+â”‚                    â”‚  Pinia  â”‚                         â”‚
+â”‚                    â”‚  Store  â”‚                         â”‚
+â”‚                    â””â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”˜                         â”‚
+â”‚                         â”‚                               â”‚
+â”‚        â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”            â”‚
+â”‚        â”‚                â”‚                â”‚            â”‚
+â”‚   â”Œâ”€â”€â”€â”€â–¼â”€â”€â”€â”€â”      â”Œâ”€â”€â”€â”€â–¼â”€â”€â”€â”€â”     â”Œâ”€â”€â”€â”€â–¼â”€â”€â”€â”€â”      â”‚
+â”‚   â”‚IndexedDBâ”‚      â”‚LocalStoreâ”‚     â”‚ Backend â”‚      â”‚
+â”‚   â”‚(Offline)â”‚      â”‚(Settings)â”‚     â”‚  API    â”‚      â”‚
+â”‚   â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜      â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜     â”‚(Optional)â”‚      â”‚
+â”‚                                     â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜      â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+```
+
+### 3.3 File Structure
+
+```
+w3jdev-united/
+â”œâ”€â”€ src/
+â”‚   â”œâ”€â”€ components/
+â”‚   â”‚   â”œâ”€â”€ lottery/
+â”‚   â”‚   â”‚   â”œâ”€â”€ Sphere3D.vue          # Three.js 3D sphere
+â”‚   â”‚   â”‚   â”œâ”€â”€ PrizeConfig.vue       # Prize management
+â”‚   â”‚   â”‚   â”œâ”€â”€ PersonList.vue        # Participant list
+â”‚   â”‚   â”‚   â””â”€â”€ ResultDisplay.vue     # Winner announcement
+â”‚   â”‚   â”œâ”€â”€ picker/
+â”‚   â”‚   â”‚   â”œâ”€â”€ SlotMachine.vue       # 2D slot animation
+â”‚   â”‚   â”‚   â””â”€â”€ NameList.vue          # Name input
+â”‚   â”‚   â”œâ”€â”€ poll/
+â”‚   â”‚   â”‚   â”œâ”€â”€ PollCreator.vue       # Poll creation form
+â”‚   â”‚   â”‚   â”œâ”€â”€ VoteInterface.vue     # Voter UI
+â”‚   â”‚   â”‚   â”œâ”€â”€ ResultsChart.vue      # Real-time charts
+â”‚   â”‚   â”‚   â””â”€â”€ OBSOverlay.vue        # OBS integration
+â”‚   â”‚   â””â”€â”€ shared/
+â”‚   â”‚       â”œâ”€â”€ Confetti.vue          # Celebration effects
+â”‚   â”‚       â”œâ”€â”€ MusicPlayer.vue       # Background audio
+â”‚   â”‚       â””â”€â”€ ThemeSelector.vue     # UI themes
+â”‚   â”œâ”€â”€ store/
+â”‚   â”‚   â”œâ”€â”€ lottery.ts                # Lottery state (from prizeConfig.ts)
+â”‚   â”‚   â”œâ”€â”€ picker.ts                 # Picker state
+â”‚   â”‚   â”œâ”€â”€ poll.ts                   # Poll state
+â”‚   â”‚   â””â”€â”€ global.ts                 # App-wide settings (from globalConfig.ts)
+â”‚   â”œâ”€â”€ services/
+â”‚   â”‚   â”œâ”€â”€ three/                    # Three.js helpers
+â”‚   â”‚   â”œâ”€â”€ audio/                    # Sound effects (from SoundEffects.ts)
+â”‚   â”‚   â”œâ”€â”€ animation/                # Web Animations helpers
+â”‚   â”‚   â””â”€â”€ api/                      # Backend API client
+â”‚   â”œâ”€â”€ utils/
+â”‚   â”‚   â”œâ”€â”€ excel.ts                  # Excel import/export
+â”‚   â”‚   â”œâ”€â”€ random.ts                 # Shuffling algorithms (from Slot.ts)
+â”‚   â”‚   â””â”€â”€ storage.ts                # IndexedDB wrapper
+â”‚   â””â”€â”€ views/
+â”‚       â”œâ”€â”€ Home.vue                  # Landing/mode selector
+â”‚       â”œâ”€â”€ LotteryView.vue           # 3D lottery interface
+â”‚       â”œâ”€â”€ PickerView.vue            # Simple picker interface
+â”‚       â””â”€â”€ PollView.vue              # Poll management
+```
+
+---
+
+## 4. Feature Specifications
+
+### 4.1 Lottery Module (3D Mode)
+
+#### 4.1.1 Participant Management
+**Reference:** [`log-lottery/src/store/personConfig.ts`](https://github.com/LOG1997/log-lottery/blob/main/src/store/personConfig.ts)
+
+**Data Model:**
+```typescript
+interface Person {
+  id: string;              // Unique identifier
+  name: string;            // Display name
+  department?: string;     // Optional grouping
+  avatar?: string;         // Photo URL
+  isWin: boolean;          // Has won a prize
+  prizeName: string[];     // List of prizes won
+  prizeTime: string[];     // Timestamps of wins
+  prizeId: string[];       // Prize IDs won
+}
+```
+
+**Features:**
+- âœ… Manual entry (name-by-name)
+- âœ… Bulk paste (comma/newline separated)
+- âœ… Excel import (.xlsx, .xls)
+  - Support columns: Name, Department, Photo URL
+  - Auto-generate IDs
+  - Duplicate detection
+- âœ… Photo upload (avatar sync)
+- âœ… Export winner list to Excel
+- âœ… Participant count display
+- âœ… Search/filter by name or department
+
+**UI Requirements:**
+- Table view with editable rows
+- Drag-and-drop Excel upload zone
+- Bulk delete with confirmation
+- Reset all (clear all participants)
+
+#### 4.1.2 Prize Configuration
+**Reference:** [`log-lottery/src/store/prizeConfig.ts`](https://github.com/LOG1997/log-lottery/blob/main/src/store/prizeConfig.ts)
+
+**Data Model:**
+```typescript
+interface Prize {
+  id: string;               // Unique ID
+  name: string;             // Prize name
+  sort: number;             // Display order (1 = top tier)
+  count: number;            // Number of winners
+  isUsedCount: number;      // Already drawn count
+  picture: {                // Prize image
+    id: string;
+    name: string;
+    url: string;
+  };
+  separateCount: {          // Multi-round drawing
+    enable: boolean;
+    countList: number[];    // e.g., [2, 3] = draw 2, then 3
+  };
+  desc: string;             // Description
+  isShow: boolean;          // Display on screen
+  isUsed: boolean;          // Fully drawn
+  frequency: number;        // Animation speed multiplier
+}
+```
+
+**Features:**
+- âœ… Add/Edit/Delete prizes
+- âœ… Reorder by sort index
+- âœ… Upload prize images
+- âœ… Multi-round drawing (e.g., draw 2 winners, then 3 more)
+- âœ… Set drawing frequency (speed)
+- âœ… Mark as used/complete
+- âœ… Hide from display
+- âœ… Current prize indicator
+
+**UI Requirements:**
+- Card-based prize list
+- Drag-to-reorder
+- Image preview
+- Progress bar (X/Y drawn)
+
+#### 4.1.3 3D Sphere Animation
+**Reference:** [`log-lottery/src/components/Sphere3D/` (inferred from Three.js usage)]
+
+**Technical Details:**
+- **Engine:** Three.js 0.166+
+- **Renderer:** WebGLRenderer
+- **Camera:** PerspectiveCamera (FOV: 75Â°)
+- **Geometry:** SphereGeometry (radius: 5, segments: 32)
+- **Material:** MeshPhongMaterial with emissive glow
+- **Lighting:** Ambient + Directional lights
+- **Animation:** Rotation + Tween.js for smooth transitions
+
+**Behavior:**
+1. **Idle State:**
+   - Sphere rotates slowly
+   - Participant names float around sphere
+   - Subtle bob animation
+
+2. **Drawing State:**
+   - Sphere spins faster
+   - Names blur with motion
+   - Duration: 3-5 seconds
+   - Sound: Spinning drum effect
+
+3. **Result State:**
+   - Sphere stops at winner
+   - Winner name scales up 2x
+   - Spotlight effect on winner
+   - Confetti explosion
+   - Sound: Victory fanfare
+
+**Customization:**
+- Sphere color (theme-based)
+- Name count on sphere (max 40 visible)
+- Spin duration
+- Card size (width/height)
+- Text color and size
+
+#### 4.1.4 Winner Announcement
+**Features:**
+- âœ… Full-screen winner display
+- âœ… Prize image + winner name
+- âœ… Confetti animation (canvas-confetti)
+- âœ… Victory sound effect
+- âœ… Winner history panel
+- âœ… Re-draw if error
+- âœ… Remove winner from pool option
+
+### 4.2 Name Picker Module (2D Simple)
+
+#### 4.2.1 Slot Machine Animation
+**Reference:** [`random-name-picker/src/assets/js/Slot.ts`](https://github.com/icelam/random-name-picker/blob/master/src/assets/js/Slot.ts)
+
+**Implementation:**
+```typescript
+class SlotMachine {
+  private nameList: string[];
+  private maxReelItems: number = 30;  // Visible items in reel
+  private shouldRemoveWinner: boolean = true;
+  private reelAnimation: Animation;
+
+  // Fisher-Yates shuffle algorithm
+  private static shuffle<T>(array: T[]): T[] {
+    const keys = Object.keys(array) as unknown[] as number[];
+    const result: T[] = [];
+    for (let k = 0, n = keys.length; k < array.length && n > 0; k += 1) {
+      const i = Math.random() * n | 0;
+      const key = keys[i];
+      result.push(array[key]);
+      n -= 1;
+      const tmp = keys[n];
+      keys[n] = key;
+      keys[i] = tmp;
+    }
+    return result;
+  }
+
+  public async spin(): Promise<boolean> {
+    // 1. Shuffle names
+    let randomNames = SlotMachine.shuffle(this.nameList);
+
+    // 2. Duplicate to fill reel if needed
+    while (randomNames.length < this.maxReelItems) {
+      randomNames = [...randomNames, ...randomNames];
+    }
+
+    // 3. Slice to max items
+    randomNames = randomNames.slice(0, this.maxReelItems);
+
+    // 4. Create DOM elements
+    const fragment = document.createDocumentFragment();
+    randomNames.forEach((name) => {
+      const newReelItem = document.createElement('div');
+      newReelItem.innerHTML = name;
+      fragment.appendChild(newReelItem);
+    });
+
+    // 5. Play animation
+    this.reelAnimation.play();
+    await animationPromise;
+
+    // 6. Winner is last item
+    const winner = randomNames[randomNames.length - 1];
+
+    // 7. Remove winner from pool if enabled
+    if (this.shouldRemoveWinner) {
+      this.nameList.splice(
+        this.nameList.findIndex((name) => name === winner), 
+        1
+      );
+    }
+
+    return true;
+  }
+}
+```
+
+**Animation Spec:**
+- **Effect:** Vertical scrolling (bottom to top)
+- **Duration:** 3 seconds (100ms per item)
+- **Easing:** `ease-in-out`
+- **Blur:** 0px â†’ 1px â†’ 0px (motion blur)
+- **Transform:** `translateY(-(items - 1) * 120px)`
+- **Final Position:** Last item visible at top
+
+**Features:**
+- âœ… Name list input (textarea)
+- âœ… Remove winner from list toggle
+- âœ… Sound effects toggle
+- âœ… Fullscreen mode
+- âœ… Mute/unmute
+- âœ… Responsive design (mobile-friendly)
+
+#### 4.2.2 Sound Effects
+**Reference:** [`random-name-picker/src/assets/js/SoundEffects.ts`](https://github.com/icelam/random-name-picker/blob/master/src/assets/js/SoundEffects.ts)
+
+**Implementation:**
+```typescript
+class SoundEffects {
+  private audioContext: AudioContext;
+  private isMuted: boolean = false;
+
+  // Piano key frequencies (A440 tuning)
+  private readonly PIANO_KEYS = {
+    'C3': 130.81,
+    'C#3': 138.59,
+    'D#3': 155.56,
+    'C4': 261.63,
+    'D4': 293.66,
+    'E4': 329.63,
+    'G4': 392.00,
+  };
+
+  // Winning sound: C4 â†’ D4 â†’ E4 â†’ G4 â†’ E4 â†’ G4
+  public win(): Promise<boolean> {
+    const musicNotes = [
+      { key: 'C4', duration: 0.175 },
+      { key: 'D4', duration: 0.175 },
+      { key: 'E4', duration: 0.175 },
+      { key: 'G4', duration: 0.275 },
+      { key: 'E4', duration: 0.15 },
+      { key: 'G4', duration: 0.9 },
+    ];
+
+    this.playSound(musicNotes, { 
+      type: 'triangle', 
+      volume: 1, 
+      easeOut: true 
+    });
+  }
+
+  // Spinning sound: D#3 â†’ C#3 â†’ C3 (loop)
+  public spin(durationInSecond: number): Promise<boolean> {
+    const musicNotes = [
+      { key: 'D#3', duration: 0.1 },
+      { key: 'C#3', duration: 0.1 },
+      { key: 'C3', duration: 0.1 },
+    ];
+
+    const duration = Math.floor(durationInSecond * 10);
+    this.playSound(
+      Array.from(Array(duration), (_, index) => 
+        musicNotes[index % 3]
+      ),
+      { type: 'triangle', easeOut: false, volume: 2 }
+    );
+  }
+}
+```
+
+### 4.3 Poll Module (Streaming Integration)
+
+#### 4.3.1 Poll Entity
+**Reference:** [`OpenStreamPoll/src/Entity/Poll.php`](https://github.com/yoanbernabeu/OpenStreamPoll/blob/main/src/Entity/Poll.php)
+
+**Data Model:**
+```typescript
+interface Poll {
+  id: number;
+  title: string;              // Poll title
+  shortCode: string;          // Unique URL slug
+  startAt: Date;              // Start time
+  endAt: Date;                // End time
+  question1: string;          // Option 1 (required)
+  question2: string;          // Option 2 (required)
+  question3?: string;         // Option 3 (optional)
+  question4?: string;         // Option 4 (optional)
+  question5?: string;         // Option 5 (optional)
+  isDraft: boolean;           // Not yet published
+  votes: Vote[];              // All votes
+}
+
+interface Vote {
+  id: number;
+  poll: Poll;                 // Associated poll
+  voterId: string;            // IP + Browser fingerprint
+  choice: number;             // 1-5 (selected option)
+  createdAt: Date;            // Vote timestamp
+}
+```
+
+**Validation Rules:**
+- Title: 1-255 characters
+- Short code: Auto-generated (8 chars, alphanumeric)
+- Duration: 15 seconds min, 1 hour max
+- Questions: Min 2, max 5 options
+- One vote per voterId per poll
+
+#### 4.3.2 Poll Creation Flow
+**Reference:** [`OpenStreamPoll/src/Form/PollType.php` (inferred)]
+
+**UI:**
+1. **Title Input**
+   - Placeholder: "What game should we play?"
+   - Character counter (0/255)
+
+2. **Options (2-5)**
+   - Option 1: Required
+   - Option 2: Required
+   - Options 3-5: Optional with "+ Add Option" button
+   - Reorder with drag handles
+   - Delete button (if >2 options)
+
+3. **Duration Selector**
+   - Preset buttons: 30s, 60s, 2min, 5min
+   - Custom input: Minutes + Seconds
+   - Countdown preview
+
+4. **Draft Toggle**
+   - Save as draft (not visible to public)
+   - Publish immediately
+
+5. **Action Buttons**
+   - Save Draft (gray)
+   - Publish Poll (green)
+   - Cancel (red)
+
+#### 4.3.3 Voting Interface
+**Reference:** [`OpenStreamPoll/src/Controller/PollController.php`](https://github.com/yoanbernabeu/OpenStreamPoll/blob/main/src/Controller/PollController.php)
+
+**URL Structure:**
+```
+Vote:    /poll/{shortCode}
+Results: /poll/{shortCode}/results
+OBS:     /obs (auto-shows active poll)
+QR Code: /obs/qr
+```
+
+**Voting Flow:**
+1. **Check Poll Status**
+   ```php
+   if (poll expired) {
+     return "This poll is no longer available";
+   }
+   if (poll is draft) {
+     return "This poll is not available";
+   }
+   ```
+
+2. **Check Voter Status**
+   ```php
+   $voterId = hash('sha256', $ip . $userAgent . $cookieId);
+
+   if (hasVoted($voterId, $poll)) {
+     return "Thank you for voting!" (show results);
+   }
+   ```
+
+3. **Display Vote Form**
+   - Large buttons for each option
+   - Real-time vote count per option (SSE)
+   - Progress bars
+   - Countdown timer
+
+4. **Submit Vote**
+   ```php
+   $vote = new Vote();
+   $vote->setVoterId($voterId);
+   $vote->setPoll($poll);
+   $vote->setChoice($selectedOption); // 1-5
+   $vote->setCreatedAt(new DateTimeImmutable());
+
+   $em->persist($vote);
+   $em->flush();
+   ```
+
+5. **Show Success**
+   - "Your vote has been recorded!"
+   - Show live results
+   - Fireworks animation
+
+**Anti-Manipulation:**
+- IP-based tracking
+- Browser fingerprint (Canvas + Fonts)
+- Cookie-based ID
+- Rate limiting (1 vote per poll per device)
+- No revote allowed
+
+#### 4.3.4 OBS Integration
+**Reference:** [`OpenStreamPoll/src/Controller/ObsController.php` (inferred)]
+
+**OBS Overlay URL:** `/obs`
+**Features:**
+- Auto-displays currently active poll
+- Transparent background
+- Scales to 1920x1080 or custom resolution
+- Updates in real-time (SSE)
+- Shows countdown timer
+- Hides when poll expires
+- CSS customizable (colors, fonts, position)
+
+**Setup Instructions:**
+1. In OBS: Add Browser Source
+2. URL: `https://yourdomain.com/obs`
+3. Width: 1920, Height: 1080
+4. Custom CSS (optional):
+   ```css
+   body {
+     --primary-color: #ff6b6b;
+     --font-family: 'Poppins', sans-serif;
+   }
+   ```
+
+**QR Code Display:** `/obs/qr`
+- Shows QR code linking to active poll
+- Auto-updates when new poll starts
+- Disappears when no active poll
+- Size: 300x300px (configurable)
+
+**OBS Dock Integration:**
+- Go to View â†’ Docks â†’ Custom Browser Docks
+- Dock Name: "W3JDev Polls"
+- URL: `https://yourdomain.com/admin`
+- Manage polls directly in OBS
+
+---
+
+## 5. Data Models
+
+### 5.1 LocalStorage Schema
+
+```typescript
+// Key: 'w3jdev-lottery'
+interface LotteryStorage {
+  participants: Person[];
+  prizes: Prize[];
+  winners: Person[];
+  settings: {
+    removeWinnerFromPool: boolean;
+    autoExport: boolean;
+    soundEnabled: boolean;
+  };
+}
+
+// Key: 'w3jdev-picker'
+interface PickerStorage {
+  nameList: string[];
+  history: string[];
+  removeWinner: boolean;
+  soundEnabled: boolean;
+}
+
+// Key: 'w3jdev-global'
+interface GlobalStorage {
+  theme: 'light' | 'dark' | 'dracula' | 'custom';
+  language: 'en' | 'zh-CN';
+  musicVolume: number; // 0-100
+  fullscreenOnDraw: boolean;
+}
+```
+
+### 5.2 IndexedDB Schema
+
+```typescript
+// Database: 'w3jdev-united'
+// Version: 1
+
+// Object Store: 'lottery-sessions'
+interface LotterySession {
+  id: string;               // UUID
+  title: string;            // e.g., "2025 Annual Party"
+  date: Date;
+  participants: Person[];
+  prizes: Prize[];
+  results: {
+    prizeId: string;
+    winners: Person[];
+    timestamp: Date;
+  }[];
+}
+
+// Object Store: 'picker-history'
+interface PickerHistory {
+  id: string;
+  names: string[];
+  winner: string;
+  timestamp: Date;
+}
+
+// Object Store: 'media'
+interface Media {
+  id: string;
+  type: 'image' | 'audio';
+  blob: Blob;
+  filename: string;
+  uploadedAt: Date;
+}
+```
+
+### 5.3 Backend API Schema (Polls)
+
+**Base URL:** `/api/v1`
+
+**Endpoints:**
+
+```
+POST   /polls                    # Create poll
+GET    /polls                    # List polls (admin)
+GET    /polls/{id}               # Get poll details
+PUT    /polls/{id}               # Update poll
+DELETE /polls/{id}               # Delete poll
+POST   /polls/{shortCode}/vote   # Submit vote
+GET    /polls/{shortCode}/results # Get results (SSE)
+```
+
+**Example Responses:**
+
+```json
+// GET /api/v1/polls/{shortCode}
+{
+  "id": 42,
+  "title": "What should we play next?",
+  "shortCode": "a7k9m2x1",
+  "startAt": "2025-11-10T15:00:00Z",
+  "endAt": "2025-11-10T15:01:00Z",
+  "options": [
+    { "id": 1, "text": "Valorant", "votes": 245 },
+    { "id": 2, "text": "Minecraft", "votes": 189 },
+    { "id": 3, "text": "Fortnite", "votes": 321 },
+    { "id": 4, "text": "Apex Legends", "votes": 156 }
+  ],
+  "totalVotes": 911,
+  "isActive": true,
+  "timeRemaining": 37
+}
+
+// POST /api/v1/polls/{shortCode}/vote
+{
+  "choice": 3
+}
+// Response:
+{
+  "success": true,
+  "message": "Vote recorded!",
+  "updatedResults": { /* same as GET results */ }
+}
+```
+
+---
+
+## 6. API Specifications
+
+### 6.1 REST API (Polls Backend)
+
+**Authentication:** Session-based (admin only)  
+**Rate Limiting:** 100 requests/minute per IP  
+**Error Format:**
+```json
+{
+  "error": {
+    "code": "POLL_EXPIRED",
+    "message": "This poll is no longer available",
+    "details": {}
+  }
+}
+```
+
+**Status Codes:**
+- 200: Success
+- 201: Created
+- 400: Bad Request (validation)
+- 401: Unauthorized
+- 403: Forbidden
+- 404: Not Found
+- 429: Rate Limit Exceeded
+- 500: Server Error
+
+### 6.2 Server-Sent Events (SSE)
+
+**Endpoint:** `/api/v1/polls/{shortCode}/stream`
+
+**Client Code:**
+```typescript
+const eventSource = new EventSource(`/api/v1/polls/${shortCode}/stream`);
+
+eventSource.addEventListener('vote', (event) => {
+  const data = JSON.parse(event.data);
+  updateChart(data.options);
+  updateTotalVotes(data.totalVotes);
+});
+
+eventSource.addEventListener('end', (event) => {
+  showResults();
+  eventSource.close();
+});
+```
+
+**Server Events:**
+```
+event: vote
+data: {"option":3,"totalVotes":912,"options":[...]}
+
+event: end
+data: {"finalResults":{...}}
+```
+
+---
+
+## 7. UI/UX Design
+
+### 7.1 Design System
+
+**Color Palette:**
+```css
+:root {
+  /* Primary Brand */
+  --w3j-primary: #0f5fd3;
+  --w3j-primary-dark: #0a4a9f;
+  --w3j-primary-light: #4d8be8;
+
+  /* Accents */
+  --w3j-accent: #ff79c6;
+  --w3j-success: #50fa7b;
+  --w3j-warning: #ffb86c;
+  --w3j-error: #ff5555;
+
+  /* Neutrals */
+  --w3j-bg: #282a36;
+  --w3j-surface: #44475a;
+  --w3j-text: #f8f8f2;
+  --w3j-text-muted: #6272a4;
+}
+```
+
+**Typography:**
+- **Headings:** Poppins (Bold)
+- **Body:** Inter (Regular)
+- **Monospace:** JetBrains Mono
+
+**Components:**
+- Based on DaisyUI
+- Custom w3jdev theme
+- Responsive grid (12 columns)
+- Mobile-first approach
+
+### 7.2 Page Layouts
+
+#### Home Page
+```
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚  W3JDev United Logo                    â”‚
+â”‚  "Your All-in-One Event Tool"          â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚                                        â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”  â”Œâ”€â”€â”€â”€â”€â”€â”  â”Œâ”€â”€â”€â”€â”€â”€â”        â”‚
+â”‚  â”‚  ðŸŽ°  â”‚  â”‚  ðŸŽ¯  â”‚  â”‚  ðŸ“Š  â”‚        â”‚
+â”‚  â”‚3D    â”‚  â”‚Name  â”‚  â”‚Live  â”‚        â”‚
+â”‚  â”‚Lotteryâ”‚  â”‚Pickerâ”‚  â”‚Polls â”‚        â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”˜  â””â”€â”€â”€â”€â”€â”€â”˜  â””â”€â”€â”€â”€â”€â”€â”˜        â”‚
+â”‚                                        â”‚
+â”‚  Recent Sessions:                      â”‚
+â”‚  â€¢ 2025 Annual Party (45 winners)     â”‚
+â”‚  â€¢ Team Building (12 winners)         â”‚
+â”‚                                        â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+```
+
+#### Lottery View (3D Mode)
+```
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚ [â† Back] 2025 Annual Party    [âš™ï¸ Settings]â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚                                        â”‚
+â”‚         â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”              â”‚
+â”‚         â”‚               â”‚              â”‚
+â”‚         â”‚   3D SPHERE   â”‚              â”‚
+â”‚         â”‚  (Three.js)   â”‚              â”‚
+â”‚         â”‚               â”‚              â”‚
+â”‚         â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜              â”‚
+â”‚                                        â”‚
+â”‚  Prize: ðŸ† Grand Prize (1 winner)     â”‚
+â”‚  Remaining: 247 participants           â”‚
+â”‚                                        â”‚
+â”‚      [START DRAW] [SKIP PRIZE]        â”‚
+â”‚                                        â”‚
+â”‚  â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”‚
+â”‚  Prize List:                           â”‚
+â”‚  âœ… Grand Prize (1/1)                 â”‚
+â”‚  â³ First Prize (3/5)                 â”‚
+â”‚  â¬œ Second Prize (0/10)               â”‚
+â”‚  â¬œ Consolation (0/20)                â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+```
+
+---
+
+## 8. Implementation Roadmap
+
+### Phase 1: Core Lottery (Weeks 1-4)
+**Goal:** Replicate log-lottery functionality
+
+**Tasks:**
+- [ ] Project setup (Vite + Vue 3 + TypeScript)
+- [ ] Pinia store (prizeConfig, personConfig, globalConfig)
+- [ ] Three.js 3D sphere component
+- [ ] Prize management UI
+- [ ] Participant import (Excel)
+- [ ] Draw animation
+- [ ] Confetti + sound effects
+- [ ] Winner export
+- [ ] LocalStorage persistence
+- [ ] English translations (all UI)
+
+**Deliverable:** Working 3D lottery with Excel import/export
+
+### Phase 2: Simple Picker (Weeks 5-6)
+**Goal:** Add random-name-picker mode
+
+**Tasks:**
+- [ ] Slot machine component (Web Animations API)
+- [ ] Sound effects (AudioContext API)
+- [ ] Settings panel (name list, sound toggle)
+- [ ] Fullscreen mode
+- [ ] Mobile responsive design
+- [ ] History tracking
+
+**Deliverable:** 2D simple picker mode
+
+### Phase 3: Poll Backend (Weeks 7-10)
+**Goal:** OpenStreamPoll PHP backend
+
+**Tasks:**
+- [ ] Symfony 7.2 setup
+- [ ] Doctrine entities (Poll, Vote, User)
+- [ ] Admin authentication
+- [ ] Poll CRUD API
+- [ ] Vote submission endpoint
+- [ ] SSE for real-time updates
+- [ ] Rate limiting + anti-cheat
+- [ ] SQLite database
+- [ ] Docker container
+
+**Deliverable:** Working poll API
+
+### Phase 4: Poll Frontend (Weeks 11-13)
+**Goal:** Vue frontend for polls
+
+**Tasks:**
+- [ ] Poll creation form
+- [ ] Vote interface with charts
+- [ ] Real-time SSE integration
+- [ ] OBS overlay (/obs route)
+- [ ] QR code generator
+- [ ] Results visualization
+- [ ] Mobile voting UI
+
+**Deliverable:** Complete poll system
+
+### Phase 5: Integration & Branding (Weeks 14-15)
+**Goal:** Unified w3jdev experience
+
+**Tasks:**
+- [ ] Unified navigation
+- [ ] W3JDev branding (logo, colors)
+- [ ] Settings sync across modules
+- [ ] Export all data (JSON, Excel)
+- [ ] Documentation
+- [ ] Video tutorials
+
+**Deliverable:** Production-ready app
+
+### Phase 6: Advanced Features (Weeks 16-20)
+**Goal:** Enhancements
+
+**Tasks:**
+- [ ] Multi-language (Chinese, Malay)
+- [ ] Custom themes
+- [ ] Advanced animations
+- [ ] Webhook notifications
+- [ ] API for 3rd party integrations
+- [ ] Analytics dashboard
+- [ ] A/B testing for polls
+
+**Deliverable:** Enterprise-grade features
+
+---
+
+## Appendix A: Source Code References
+
+### Key Files by Feature
+
+| Feature | Source Repository | File Path |
+|---------|------------------|-----------|
+| Prize Management | log-lottery | [`src/store/prizeConfig.ts`](https://github.com/LOG1997/log-lottery/blob/main/src/store/prizeConfig.ts) |
+| Person Management | log-lottery | [`src/store/personConfig.ts`](https://github.com/LOG1997/log-lottery/blob/main/src/store/personConfig.ts) |
+| Global Config | log-lottery | [`src/store/globalConfig.ts`](https://github.com/LOG1997/log-lottery/blob/main/src/store/globalConfig.ts) |
+| Slot Machine | random-name-picker | [`src/assets/js/Slot.ts`](https://github.com/icelam/random-name-picker/blob/master/src/assets/js/Slot.ts) |
+| Sound Effects | random-name-picker | [`src/assets/js/SoundEffects.ts`](https://github.com/icelam/random-name-picker/blob/master/src/assets/js/SoundEffects.ts) |
+| App Init | random-name-picker | [`src/assets/js/app.ts`](https://github.com/icelam/random-name-picker/blob/master/src/assets/js/app.ts) |
+| Poll Entity | OpenStreamPoll | [`src/Entity/Poll.php`](https://github.com/yoanbernabeu/OpenStreamPoll/blob/main/src/Entity/Poll.php) |
+| Vote Entity | OpenStreamPoll | [`src/Entity/Vote.php`](https://github.com/yoanbernabeu/OpenStreamPoll/blob/main/src/Entity/Vote.php) |
+| Poll Controller | OpenStreamPoll | [`src/Controller/PollController.php`](https://github.com/yoanbernabeu/OpenStreamPoll/blob/main/src/Controller/PollController.php) |
+
+---
+
+## Appendix B: Dependencies
+
+### Frontend
+```json
+{
+  "dependencies": {
+    "vue": "^3.5.13",
+    "three": "^0.166.0",
+    "@tweenjs/tween.js": "^23.1.2",
+    "pinia": "^2.2.6",
+    "pinia-plugin-persist": "^1.0.0",
+    "vue-router": "^4.5.0",
+    "vue-i18n": "^10.0.4",
+    "axios": "^1.7.8",
+    "canvas-confetti": "^1.9.3",
+    "dayjs": "^1.11.13",
+    "xlsx": "^0.18.5",
+    "localforage": "^1.10.0"
+  },
+  "devDependencies": {
+    "vite": "^5.4.11",
+    "typescript": "5.5.3",
+    "daisyui": "^4.12.14",
+    "tailwindcss": "^3.4.15",
+    "@vueuse/core": "^11.3.0"
+  }
+}
+```
+
+### Backend (Polls)
+```json
+{
+  "require": {
+    "php": ">=8.3",
+    "symfony/framework-bundle": "7.2.*",
+    "doctrine/orm": "^3.3",
+    "doctrine/doctrine-bundle": "^2.13",
+    "runtime/frankenphp-symfony": "^0.2.0",
+    "chillerlan/php-qrcode": "^5.0"
+  }
+}
+```
+
+---
+
+## Appendix C: Glossary
+
+- **3D Sphere:** Three.js powered 3D ball showing participant names
+- **Slot Machine:** Vertical scrolling animation (like casino slots)
+- **SSE:** Server-Sent Events (one-way real-time updates)
+- **OBS:** Open Broadcaster Software (streaming tool)
+- **Short Code:** Unique 8-char poll identifier
+- **Voter ID:** SHA-256 hash of IP + UserAgent + Cookie
+- **Draft Poll:** Saved but not published poll
+- **Rate Limiting:** Prevents spam voting (1 vote per poll per device)
+
+---
+
+## Document Metadata
+
+**Generated by:** Rube AI Agent  
+**Date:** November 10, 2025  
+**Total Pages:** ~50  
+**Format:** GitHub Spec-Kit Compatible Markdown
+
+---
+
+## License
+
+This specification document is provided under MIT License.  
+Original source code repositories maintain their respective licenses:
+- log-lottery: MIT
+- random-name-picker: MIT
+- OpenStreamPoll: MIT
+
+**End of Specification**
