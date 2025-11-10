@@ -15,16 +15,7 @@ export default defineConfig({
   },
   build: {
     sourcemap: false,
-    chunkSizeWarningLimit: 1000,
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          'three': ['three', '@tweenjs/tween.js'],
-          'vendor': ['vue', 'vue-router', 'pinia'],
-          'ui': ['canvas-confetti']
-        }
-      }
-    }
+    chunkSizeWarningLimit: 1000
   },
   server: {
     host: true,

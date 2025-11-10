@@ -18,13 +18,5 @@
       "src": "/(.*)",
       "dest": "/index.html"
     }
-  ],
-  "env": {
-    "VITE_BASE_URL": "@base_url"
-  },
-  "build": {
-    "env": {
-      "VITE_BASE_URL": "@base_url"
-    }
-  }
+  ]
 }
