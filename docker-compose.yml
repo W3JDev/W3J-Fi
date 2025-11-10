@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:8000/api/v1
+    command: npm run dev
+    networks:
+      - w3jdev-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - ./backend/var:/app/var
+    environment:
+      - DATABASE_URL=sqlite:///%kernel.project_dir%/var/data.db
+      - APP_ENV=dev
+    networks:
+      - w3jdev-network
+    depends_on:
+      - frontend
+
+networks:
+  w3jdev-network:
+    driver: bridge
+
+volumes:
+  backend-data:

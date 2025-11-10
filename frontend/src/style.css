@@ -1,0 +1,80 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* W3JDev Brand Colors */
+    --w3j-primary: #0f5fd3;
+    --w3j-primary-dark: #0a4a9f;
+    --w3j-primary-light: #4d8be8;
+    --w3j-accent: #ff79c6;
+    --w3j-success: #50fa7b;
+    --w3j-warning: #ffb86c;
+    --w3j-error: #ff5555;
+    --w3j-bg: #282a36;
+    --w3j-surface: #44475a;
+    --w3j-text: #f8f8f2;
+    --w3j-text-muted: #6272a4;
+  }
+
+  body {
+    @apply font-body bg-base-100 text-base-content;
+    margin: 0;
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading font-bold;
+  }
+
+  #app {
+    min-height: 100vh;
+  }
+}
+
+@layer components {
+  .w3j-btn-primary {
+    @apply btn bg-w3j-primary hover:bg-w3j-primary-dark text-white border-0;
+  }
+
+  .w3j-btn-secondary {
+    @apply btn bg-w3j-accent hover:opacity-90 text-white border-0;
+  }
+
+  .w3j-card {
+    @apply card bg-w3j-surface shadow-xl;
+  }
+
+  .w3j-input {
+    @apply input input-bordered bg-base-200;
+  }
+
+  /* 3D Canvas Container */
+  .lottery-canvas {
+    @apply w-full h-96 rounded-lg overflow-hidden shadow-2xl;
+  }
+
+  /* Slot Machine Animation */
+  .slot-machine {
+    @apply relative overflow-hidden rounded-lg bg-gradient-to-b from-gray-800 to-gray-900;
+  }
+
+  /* Confetti Layer */
+  .confetti-canvas {
+    @apply fixed inset-0 pointer-events-none z-50;
+  }
+}
+
+@layer utilities {
+  .blur-motion {
+    filter: blur(2px);
+    transition: filter 0.3s ease-out;
+  }
+
+  .text-glow {
+    text-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+  }
+}
