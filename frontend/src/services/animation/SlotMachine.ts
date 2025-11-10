@@ -123,6 +123,10 @@ export class SlotMachine {
     // Winner is the last item
     const winner = shuffledNames[shuffledNames.length - 1]
 
+    if (!winner) {
+      throw new Error('No winner selected')
+    }
+
     return winner
   }
 
@@ -172,7 +176,7 @@ export function createSlotMachine(
 ): SlotMachine {
   return new SlotMachine({
     container,
-    names,
+    names: names || [],
     duration,
     maxReelItems: 30,
     itemHeight: 120

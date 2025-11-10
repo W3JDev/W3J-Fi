@@ -12,8 +12,8 @@ export function shuffle<T>(array: T[]): T[] {
   
   for (let i = n - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
-    const temp = result[i]
-    result[i] = result[j]
+    const temp = result[i]!
+    result[i] = result[j]!
     result[j] = temp
   }
   
@@ -27,7 +27,8 @@ export function shuffle<T>(array: T[]): T[] {
  */
 export function pickRandom<T>(array: T[]): T | null {
   if (array.length === 0) return null
-  return array[Math.floor(Math.random() * array.length)]
+  const item = array[Math.floor(Math.random() * array.length)]
+  return item ?? null
 }
 
 /**

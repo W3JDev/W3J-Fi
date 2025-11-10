@@ -30,10 +30,10 @@ export const mediaStore = localforage.createInstance({
 /**
  * Save a lottery session
  */
-export async function saveLotterySession(sessionId: string, data: any) {
+export async function saveLotterySession(sessionId: string, data: Record<string, any>) {
   try {
     await lotterySessionsStore.setItem(sessionId, {
-      ...data,
+      ...(data || {}),
       savedAt: new Date().toISOString()
     })
     return true
@@ -62,7 +62,9 @@ export async function listLotterySessions() {
   try {
     const sessions: any[] = []
     await lotterySessionsStore.iterate((value, key) => {
-      sessions.push({ id: key, ...value })
+      if (value && typeof value === 'object') {
+        sessions.push({ id: key, ...(value as Record<string, any>) })
+      }
     })
     return sessions.sort((a, b) => 
       new Date(b.savedAt).getTime() - new Date(a.savedAt).getTime()
@@ -89,7 +91,7 @@ export async function deleteLotterySession(sessionId: string) {
 /**
  * Save picker history
  */
-export async function savePickerHistory(historyId: string, data: any) {
+export async function savePickerHistory(historyId: string, data: Record<string, any>) {
   try {
     await pickerHistoryStore.setItem(historyId, data)
     return true

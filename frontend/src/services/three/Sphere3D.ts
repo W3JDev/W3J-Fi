@@ -237,7 +237,7 @@ export class Sphere3DManager {
   /**
    * Get name from sprite (extract from canvas texture)
    */
-  private getSpriteName(sprite: THREE.Sprite): string {
+  private getSpriteName(_sprite: THREE.Sprite): string {
     // This is a simplified version - in production, store name with sprite
     return ''
   }

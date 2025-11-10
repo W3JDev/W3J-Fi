@@ -19,12 +19,25 @@ export async function importParticipantsFromExcel(file: File): Promise<Person[]>
 
     reader.onload = (e) => {
       try {
-        const data = new Uint8Array(e.target?.result as ArrayBuffer)
+        const arrayBuffer = e.target?.result
+      if (!arrayBuffer) {
+        reject(new Error('Failed to read file'))
+        return
+      }
+      const data = new Uint8Array(arrayBuffer as ArrayBuffer)
         const workbook = XLSX.read(data, { type: 'array' })
         
         // Get the first sheet
         const firstSheetName = workbook.SheetNames[0]
+        if (!firstSheetName) {
+          reject(new Error('No worksheets found in file'))
+          return
+        }
         const worksheet = workbook.Sheets[firstSheetName]
+        if (!worksheet) {
+          reject(new Error('Worksheet is empty'))
+          return
+        }
         
         // Convert to JSON
         const jsonData = XLSX.utils.sheet_to_json<ExcelParticipant>(worksheet)
