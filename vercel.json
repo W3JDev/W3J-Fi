@@ -12,10 +12,6 @@
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/index.php"
-    },
-    {
       "handle": "filesystem"
     },
     {
@@ -24,12 +20,10 @@
     }
   ],
   "env": {
-    "VITE_API_URL": "@api_url",
     "VITE_BASE_URL": "@base_url"
   },
   "build": {
     "env": {
-      "VITE_API_URL": "@api_url",
       "VITE_BASE_URL": "@base_url"
     }
   }
