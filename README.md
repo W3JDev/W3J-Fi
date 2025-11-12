@@ -1,10 +1,5 @@
 # 🎯 W3JFi - Professional Lottery & Polling Application
 
-[
-[
-[
-[
-
 A comprehensive, professional lottery and polling app fusing **3D lottery spheres**, **simple name pickers**, and **live streaming polls**. Designed for corporate events, conferences, and large-scale draws.
 
 ***
