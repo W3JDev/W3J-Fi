@@ -18,10 +18,18 @@ export default defineConfig({
     chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
-        manualChunks: {
-          'three': ['three', '@tweenjs/tween.js'],
-          'vendor': ['vue', 'vue-router', 'pinia'],
-          'ui': ['canvas-confetti']
+        manualChunks: (id) => {
+          if (id.includes('node_modules')) {
+            if (id.includes('three') || id.includes('tween')) {
+              return 'three'
+            }
+            if (id.includes('vue') || id.includes('pinia')) {
+              return 'vendor'
+            }
+            if (id.includes('confetti')) {
+              return 'ui'
+            }
+          }
         }
       }
     }

@@ -39,6 +39,12 @@ const routes: RouteRecordRaw[] = [
     meta: { title: 'Poll Results - W3JDev United' }
   },
   {
+    path: '/poll/:shortCode/qr',
+    name: 'PollQRCode',
+    component: () => import('../views/OBSQRCode.vue'),
+    meta: { title: 'QR Code - W3JDev United' }
+  },
+  {
     path: '/obs',
     name: 'OBS',
     component: () => import('../views/OBSOverlay.vue'),

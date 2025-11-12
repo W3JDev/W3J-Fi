@@ -1,0 +1,390 @@
+{
+  "polls": [
+    {
+      "id": 1762959745595,
+      "title": "Best Programming Language 2025",
+      "shortCode": "-ONJSBZS",
+      "startAt": "2025-11-12T13:02:25.595Z",
+      "endAt": "2025-11-12T16:02:25.595Z",
+      "question1": "JavaScript/TypeScript",
+      "question2": "Python",
+      "question3": "Rust",
+      "question4": "Go",
+      "question5": "Java",
+      "isDraft": false,
+      "votes": [
+        {
+          "id": 1762959745597,
+          "voterId": "employee-001",
+          "choice": 2,
+          "createdAt": "2025-11-12T14:19:07.297Z"
+        },
+        {
+          "id": 1762959745598,
+          "voterId": "employee-002",
+          "choice": 5,
+          "createdAt": "2025-11-12T14:40:23.660Z"
+        },
+        {
+          "id": 1762959745599,
+          "voterId": "employee-003",
+          "choice": 3,
+          "createdAt": "2025-11-12T14:37:41.698Z"
+        },
+        {
+          "id": 1762959745600,
+          "voterId": "employee-004",
+          "choice": 5,
+          "createdAt": "2025-11-12T13:14:13.097Z"
+        },
+        {
+          "id": 1762959745601,
+          "voterId": "employee-005",
+          "choice": 2,
+          "createdAt": "2025-11-12T13:32:11.407Z"
+        },
+        {
+          "id": 1762959745602,
+          "voterId": "employee-006",
+          "choice": 3,
+          "createdAt": "2025-11-12T14:05:41.044Z"
+        },
+        {
+          "id": 1762959745603,
+          "voterId": "employee-007",
+          "choice": 5,
+          "createdAt": "2025-11-12T14:00:56.342Z"
+        },
+        {
+          "id": 1762959745604,
+          "voterId": "employee-008",
+          "choice": 2,
+          "createdAt": "2025-11-12T13:51:50.369Z"
+        },
+        {
+          "id": 1762959745605,
+          "voterId": "employee-009",
+          "choice": 4,
+          "createdAt": "2025-11-12T14:41:26.353Z"
+        },
+        {
+          "id": 1762959745606,
+          "voterId": "employee-010",
+          "choice": 1,
+          "createdAt": "2025-11-12T13:08:46.626Z"
+        },
+        {
+          "id": 1762959745607,
+          "voterId": "employee-011",
+          "choice": 4,
+          "createdAt": "2025-11-12T14:21:22.316Z"
+        },
+        {
+          "id": 1762959745608,
+          "voterId": "employee-012",
+          "choice": 4,
+          "createdAt": "2025-11-12T13:29:01.133Z"
+        },
+        {
+          "id": 1762959745609,
+          "voterId": "employee-013",
+          "choice": 1,
+          "createdAt": "2025-11-12T13:29:25.650Z"
+        },
+        {
+          "id": 1762959745610,
+          "voterId": "employee-014",
+          "choice": 1,
+          "createdAt": "2025-11-12T13:29:35.711Z"
+        },
+        {
+          "id": 1762959745611,
+          "voterId": "employee-015",
+          "choice": 3,
+          "createdAt": "2025-11-12T13:24:28.647Z"
+        }
+      ]
+    },
+    {
+      "id": 1762959745598,
+      "title": "Company Annual Party Theme",
+      "shortCode": "NUQWALTK",
+      "startAt": "2025-11-12T14:32:25.595Z",
+      "endAt": "2025-11-12T15:32:25.595Z",
+      "question1": "Beach Party",
+      "question2": "Casino Night",
+      "question3": "Masquerade Ball",
+      "question4": "Retro 80s",
+      "isDraft": false,
+      "votes": [
+        {
+          "id": 1762959745697,
+          "voterId": "employee-001",
+          "choice": 2,
+          "createdAt": "2025-11-12T14:37:43.061Z"
+        },
+        {
+          "id": 1762959745698,
+          "voterId": "employee-002",
+          "choice": 2,
+          "createdAt": "2025-11-12T14:37:20.327Z"
+        },
+        {
+          "id": 1762959745699,
+          "voterId": "employee-003",
+          "choice": 2,
+          "createdAt": "2025-11-12T14:40:13.985Z"
+        },
+        {
+          "id": 1762959745700,
+          "voterId": "employee-004",
+          "choice": 4,
+          "createdAt": "2025-11-12T14:51:33.591Z"
+        },
+        {
+          "id": 1762959745701,
+          "voterId": "employee-005",
+          "choice": 2,
+          "createdAt": "2025-11-12T14:34:46.828Z"
+        },
+        {
+          "id": 1762959745702,
+          "voterId": "employee-006",
+          "choice": 1,
+          "createdAt": "2025-11-12T14:34:22.410Z"
+        },
+        {
+          "id": 1762959745703,
+          "voterId": "employee-007",
+          "choice": 3,
+          "createdAt": "2025-11-12T15:00:03.946Z"
+        },
+        {
+          "id": 1762959745704,
+          "voterId": "employee-008",
+          "choice": 1,
+          "createdAt": "2025-11-12T14:50:14.010Z"
+        },
+        {
+          "id": 1762959745705,
+          "voterId": "employee-009",
+          "choice": 3,
+          "createdAt": "2025-11-12T14:52:18.977Z"
+        },
+        {
+          "id": 1762959745706,
+          "voterId": "employee-010",
+          "choice": 4,
+          "createdAt": "2025-11-12T14:37:44.601Z"
+        }
+      ]
+    },
+    {
+      "id": 1762959745599,
+      "title": "Q1 2026 Team Building Activity",
+      "shortCode": "VOWCGJPX",
+      "startAt": "2025-11-14T15:02:25.595Z",
+      "endAt": "2025-11-15T15:02:25.595Z",
+      "question1": "Escape Room",
+      "question2": "Hiking Trip",
+      "question3": "Cooking Class",
+      "isDraft": false,
+      "votes": []
+    },
+    {
+      "id": 1762959745600,
+      "title": "Draft: Christmas Party Ideas",
+      "shortCode": "H1_514FR",
+      "startAt": "2025-11-12T15:02:25.595Z",
+      "endAt": "2025-11-19T15:02:25.595Z",
+      "question1": "Secret Santa",
+      "question2": "White Elephant",
+      "question3": "Charity Auction",
+      "isDraft": true,
+      "votes": []
+    },
+    {
+      "id": 1762963490128,
+      "shortCode": "WZ0YY_CM",
+      "title": "tesst",
+      "question1": "qwert",
+      "question2": "asdff",
+      "question3": null,
+      "question4": null,
+      "question5": null,
+      "isDraft": false,
+      "startAt": "2025-11-12T16:04:50.140Z",
+      "endAt": "2025-11-12T16:09:50.140Z",
+      "createdAt": "2025-11-12T16:04:50.140Z"
+    }
+  ],
+  "votes": [],
+  "lotterySessions": [
+    {
+      "id": "lottery-session-1762959745599",
+      "name": "W3JFi 2025 Annual Lottery",
+      "createdAt": "2025-11-12T15:02:25.595Z",
+      "participants": [
+        {
+          "id": "1",
+          "name": "Alice Johnson",
+          "department": "Engineering",
+          "avatar": "👩‍💻"
+        },
+        {
+          "id": "2",
+          "name": "Bob Smith",
+          "department": "Marketing",
+          "avatar": "👨‍💼"
+        },
+        {
+          "id": "3",
+          "name": "Carol Williams",
+          "department": "Sales",
+          "avatar": "👩‍💼"
+        },
+        {
+          "id": "4",
+          "name": "David Brown",
+          "department": "Engineering",
+          "avatar": "👨‍💻"
+        },
+        {
+          "id": "5",
+          "name": "Emma Davis",
+          "department": "HR",
+          "avatar": "👩‍🦰"
+        },
+        {
+          "id": "6",
+          "name": "Frank Miller",
+          "department": "Finance",
+          "avatar": "👨‍💼"
+        },
+        {
+          "id": "7",
+          "name": "Grace Wilson",
+          "department": "Operations",
+          "avatar": "👩‍💼"
+        },
+        {
+          "id": "8",
+          "name": "Henry Taylor",
+          "department": "Engineering",
+          "avatar": "👨‍💻"
+        },
+        {
+          "id": "9",
+          "name": "Iris Anderson",
+          "department": "Marketing",
+          "avatar": "👩‍💼"
+        },
+        {
+          "id": "10",
+          "name": "Jack Thomas",
+          "department": "Sales",
+          "avatar": "👨‍💼"
+        },
+        {
+          "id": "11",
+          "name": "Kate Martinez",
+          "department": "Engineering",
+          "avatar": "👩‍💻"
+        },
+        {
+          "id": "12",
+          "name": "Leo Garcia",
+          "department": "HR",
+          "avatar": "👨‍💼"
+        },
+        {
+          "id": "13",
+          "name": "Mia Rodriguez",
+          "department": "Finance",
+          "avatar": "👩‍💼"
+        },
+        {
+          "id": "14",
+          "name": "Noah Lee",
+          "department": "Operations",
+          "avatar": "👨‍💻"
+        },
+        {
+          "id": "15",
+          "name": "Olivia White",
+          "department": "Marketing",
+          "avatar": "👩‍💼"
+        },
+        {
+          "id": "16",
+          "name": "Peter Harris",
+          "department": "Sales",
+          "avatar": "👨‍💼"
+        },
+        {
+          "id": "17",
+          "name": "Quinn Clark",
+          "department": "Engineering",
+          "avatar": "👩‍💻"
+        },
+        {
+          "id": "18",
+          "name": "Ryan Lewis",
+          "department": "HR",
+          "avatar": "👨‍💼"
+        },
+        {
+          "id": "19",
+          "name": "Sophia Walker",
+          "department": "Finance",
+          "avatar": "👩‍💼"
+        },
+        {
+          "id": "20",
+          "name": "Tom Hall",
+          "department": "Operations",
+          "avatar": "👨‍💻"
+        }
+      ],
+      "prizes": [
+        {
+          "id": "p1",
+          "name": "MacBook Pro M3",
+          "quantity": 1,
+          "icon": "💻",
+          "winner": null
+        },
+        {
+          "id": "p2",
+          "name": "iPhone 15 Pro",
+          "quantity": 2,
+          "icon": "📱",
+          "winner": null
+        },
+        {
+          "id": "p3",
+          "name": "AirPods Pro",
+          "quantity": 3,
+          "icon": "🎧",
+          "winner": null
+        },
+        {
+          "id": "p4",
+          "name": "$500 Gift Card",
+          "quantity": 5,
+          "icon": "🎁",
+          "winner": null
+        },
+        {
+          "id": "p5",
+          "name": "Wireless Charger",
+          "quantity": 10,
+          "icon": "⚡",
+          "winner": null
+        }
+      ],
+      "winners": [],
+      "drawHistory": []
+    }
+  ]
+}

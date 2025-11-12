@@ -143,6 +143,51 @@ const formatDate = (date: Date) => {
   return new Date(date).toLocaleString()
 }
 
+const load500TestNames = () => {
+  // Generate test names dynamically
+  const firstNames = [
+    'James', 'Mary', 'John', 'Patricia', 'Robert', 'Jennifer', 'Michael', 'Linda',
+    'William', 'Barbara', 'David', 'Elizabeth', 'Richard', 'Susan', 'Joseph', 'Jessica',
+    'Thomas', 'Sarah', 'Charles', 'Karen', 'Christopher', 'Nancy', 'Daniel', 'Lisa',
+    'Matthew', 'Betty', 'Anthony', 'Margaret', 'Mark', 'Sandra', 'Donald', 'Ashley',
+    'Steven', 'Kimberly', 'Paul', 'Emily', 'Andrew', 'Donna', 'Joshua', 'Michelle',
+    'Kenneth', 'Dorothy', 'Kevin', 'Carol', 'Brian', 'Amanda', 'George', 'Melissa',
+    'Edward', 'Deborah', 'Ronald', 'Stephanie', 'Timothy', 'Rebecca', 'Jason', 'Sharon',
+    'Jeffrey', 'Laura', 'Ryan', 'Cynthia', 'Jacob', 'Kathleen', 'Gary', 'Amy',
+    'Nicholas', 'Shirley', 'Eric', 'Angela', 'Jonathan', 'Helen', 'Stephen', 'Anna',
+    'Larry', 'Brenda', 'Justin', 'Pamela', 'Scott', 'Nicole', 'Brandon', 'Emma'
+  ]
+  
+  const lastNames = [
+    'Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis',
+    'Rodriguez', 'Martinez', 'Hernandez', 'Lopez', 'Gonzalez', 'Wilson', 'Anderson', 'Thomas',
+    'Taylor', 'Moore', 'Jackson', 'Martin', 'Lee', 'Perez', 'Thompson', 'White',
+    'Harris', 'Sanchez', 'Clark', 'Ramirez', 'Lewis', 'Robinson', 'Walker', 'Young',
+    'Allen', 'King', 'Wright', 'Scott', 'Torres', 'Nguyen', 'Hill', 'Flores',
+    'Green', 'Adams', 'Nelson', 'Baker', 'Hall', 'Rivera', 'Campbell', 'Mitchell',
+    'Carter', 'Roberts', 'Gomez', 'Phillips', 'Evans', 'Turner', 'Diaz', 'Parker',
+    'Cruz', 'Edwards', 'Collins', 'Reyes', 'Stewart', 'Morris', 'Morales', 'Murphy',
+    'Cook', 'Rogers', 'Gutierrez', 'Ortiz', 'Morgan', 'Cooper', 'Peterson', 'Bailey',
+    'Reed', 'Kelly', 'Howard', 'Ramos', 'Kim', 'Cox', 'Ward', 'Richardson',
+    'Watson', 'Brooks', 'Chavez', 'Wood', 'James', 'Bennett', 'Gray', 'Mendoza',
+    'Ruiz', 'Hughes', 'Price', 'Alvarez', 'Castillo', 'Sanders', 'Patel', 'Myers',
+    'Long', 'Ross', 'Foster', 'Jimenez'
+  ]
+
+  const names: string[] = []
+  for (let i = 0; i < 500; i++) {
+    const firstName = firstNames[i % firstNames.length]
+    const lastName = lastNames[Math.floor(i / firstNames.length) % lastNames.length]
+    const number = Math.floor(i / (firstNames.length * lastNames.length)) + 1
+    const suffix = number > 1 ? ` ${number}` : ''
+    names.push(`${firstName} ${lastName}${suffix}`)
+  }
+
+  pickerStore.setNames(names)
+  updateSlotMachine()
+  alert('Loaded 500 test names successfully!')
+}
+
 const goBack = () => {
   router.push('/')
 }
@@ -256,9 +301,14 @@ const goBack = () => {
                   />
                 </label>
               </div>
-              <button @click="showSettings = true" class="btn btn-outline btn-sm mt-2">
-                Bulk Import
-              </button>
+              <div class="flex gap-2 mt-2">
+                <button @click="showSettings = true" class="btn btn-outline btn-sm flex-1">
+                  Bulk Import
+                </button>
+                <button @click="load500TestNames" class="btn btn-outline btn-sm btn-accent flex-1">
+                  Load 500 Test
+                </button>
+              </div>
             </div>
           </div>
 

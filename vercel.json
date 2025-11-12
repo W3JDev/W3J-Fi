@@ -1,20 +1,9 @@
 {
   "version": 2,
   "name": "w3jdev-united",
-  "builds": [
-    {
-      "src": "frontend/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist"
-      }
-    }
-  ],
+  "buildCommand": "cd frontend && npm install && npm run build",
+  "outputDirectory": "frontend/dist",
   "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/index.php"
-    },
     {
       "handle": "filesystem"
     },
@@ -23,14 +12,15 @@
       "dest": "/index.html"
     }
   ],
-  "env": {
-    "VITE_API_URL": "@api_url",
-    "VITE_BASE_URL": "@base_url"
-  },
-  "build": {
-    "env": {
-      "VITE_API_URL": "@api_url",
-      "VITE_BASE_URL": "@base_url"
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
     }
-  }
+  ]
 }

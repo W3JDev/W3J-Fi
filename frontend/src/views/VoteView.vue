@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { usePollStore } from '../store/poll'
 
@@ -11,10 +11,11 @@ const shortCode = route.params.shortCode as string
 const selectedOption = ref<number | null>(null)
 const hasVoted = ref(false)
 const voterId = ref('')
+const loading = ref(true)
+const error = ref('')
+let eventSource: EventSource | null = null
 
-const poll = computed(() => {
-  return pollStore.polls.find(p => p.shortCode === shortCode)
-})
+const poll = computed(() => pollStore.currentPoll)
 
 const pollOptions = computed(() => {
   if (!poll.value) return []
@@ -48,7 +49,7 @@ const timeRemaining = computed(() => {
   return Math.max(0, Math.floor(remaining / 1000))
 })
 
-onMounted(() => {
+onMounted(async () => {
   // Generate or retrieve voter ID
   const storedVoterId = localStorage.getItem('voterId')
   if (storedVoterId) {
@@ -58,16 +59,29 @@ onMounted(() => {
     localStorage.setItem('voterId', voterId.value)
   }
 
-  // Check if already voted
-  if (poll.value) {
-    hasVoted.value = pollStore.checkIfVoted(poll.value.id, voterId.value)
-    if (hasVoted.value) {
-      // Find what they voted for
-      const userVote = poll.value.votes.find(v => v.voterId === voterId.value)
-      if (userVote) {
-        selectedOption.value = userVote.choice
+  // Load poll from API
+  try {
+    await pollStore.loadPollByShortCode(shortCode)
+    
+    // Check if already voted
+    if (poll.value) {
+      hasVoted.value = pollStore.checkIfVoted(poll.value.id, voterId.value)
+      if (hasVoted.value) {
+        // Find what they voted for
+        const userVote = poll.value.votes.find(v => v.voterId === voterId.value)
+        if (userVote) {
+          selectedOption.value = userVote.choice
+        }
       }
     }
+
+    // Connect to live updates
+    eventSource = pollStore.connectToLiveUpdates(shortCode)
+  } catch (err) {
+    error.value = 'Failed to load poll'
+    console.error(err)
+  } finally {
+    loading.value = false
   }
 
   // Start timer
@@ -80,11 +94,23 @@ onMounted(() => {
   }
 })
 
-const submitVote = () => {
+onUnmounted(() => {
+  // Close SSE connection
+  if (eventSource) {
+    eventSource.close()
+  }
+})
+
+const submitVote = async () => {
   if (!poll.value || selectedOption.value === null || hasVoted.value) return
 
-  pollStore.addVote(poll.value.id, selectedOption.value, voterId.value)
-  hasVoted.value = true
+  try {
+    await pollStore.addVote(shortCode, selectedOption.value, voterId.value)
+    hasVoted.value = true
+  } catch (err) {
+    error.value = 'Failed to submit vote'
+    console.error(err)
+  }
 }
 
 const getPercentage = (votes: number) => {
@@ -100,8 +126,21 @@ const viewResults = () => {
 <template>
   <div class="min-h-screen bg-base-100 flex items-center justify-center p-4">
     <div class="max-w-2xl w-full">
+      <!-- Loading -->
+      <div v-if="loading" class="flex justify-center items-center">
+        <span class="loading loading-spinner loading-lg"></span>
+      </div>
+
+      <!-- Error -->
+      <div v-else-if="error" class="alert alert-error">
+        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>{{ error }}</span>
+      </div>
+
       <!-- Poll Not Found -->
-      <div v-if="!poll" class="alert alert-error">
+      <div v-else-if="!poll" class="alert alert-error">
         <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>

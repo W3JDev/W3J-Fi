@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { usePollStore } from '../store/poll'
 import Confetti from '../components/shared/Confetti.vue'
@@ -9,10 +9,9 @@ const router = useRouter()
 const pollStore = usePollStore()
 
 const shortCode = route.params.shortCode as string
+let eventSource: EventSource | null = null
 
-const poll = computed(() => {
-  return pollStore.polls.find(p => p.shortCode === shortCode)
-})
+const poll = computed(() => pollStore.currentPoll)
 
 const pollOptions = computed(() => {
   if (!poll.value) return []
@@ -46,6 +45,25 @@ const winner = computed(() => {
 const goBack = () => {
   router.push('/poll')
 }
+
+onMounted(async () => {
+  // Load poll from API
+  try {
+    await pollStore.loadPollByShortCode(shortCode)
+    
+    // Connect to live updates
+    eventSource = pollStore.connectToLiveUpdates(shortCode)
+  } catch (err) {
+    console.error('Failed to load poll:', err)
+  }
+})
+
+onUnmounted(() => {
+  // Close SSE connection
+  if (eventSource) {
+    eventSource.close()
+  }
+})
 </script>
 
 <template>

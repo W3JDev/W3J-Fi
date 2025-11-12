@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import { pollApi } from '../services/api/client'
 
 export interface Poll {
   id: number
@@ -85,25 +86,66 @@ export const usePollStore = defineStore('poll', () => {
   })
 
   // Actions
+  async function loadPolls(status?: 'active' | 'draft' | 'expired') {
+    try {
+      const response = await pollApi.getAllPolls(status)
+      // Backend returns array directly, not wrapped in data property
+      polls.value = Array.isArray(response) ? response : (response.data || [])
+    } catch (error) {
+      console.error('Failed to load polls:', error)
+      throw error
+    }
+  }
+
+  async function loadPollByShortCode(shortCode: string) {
+    try {
+      const response = await pollApi.getPollByShortCode(shortCode)
+      // Backend returns poll directly
+      const poll = response.data || response
+      setCurrentPoll(poll)
+      return poll
+    } catch (error) {
+      console.error('Failed to load poll:', error)
+      throw error
+    }
+  }
+
   function setPolls(newPolls: Poll[]) {
     polls.value = newPolls
   }
 
-  function addPoll(poll: Poll) {
-    polls.value.push(poll)
-  }
-
-  function updatePoll(id: number, data: Partial<Poll>) {
-    const poll = polls.value.find(p => p.id === id)
-    if (poll) {
-      Object.assign(poll, data)
+  async function addPoll(pollData: {
+    title: string
+    question1: string
+    question2: string
+    question3?: string
+    question4?: string
+    question5?: string
+    duration: number
+    isDraft: boolean
+  }) {
+    try {
+      const response = await pollApi.createPoll(pollData)
+      // Backend returns poll directly
+      const poll = response.data || response
+      polls.value.push(poll)
+      return poll
+    } catch (error) {
+      console.error('Failed to create poll:', error)
+      throw error
     }
   }
 
-  function deletePoll(id: number) {
-    const index = polls.value.findIndex(p => p.id === id)
-    if (index !== -1) {
-      polls.value.splice(index, 1)
+  async function deletePoll(shortCode: string) {
+    try {
+      await pollApi.deletePoll(shortCode)
+      const index = polls.value.findIndex(p => p.shortCode === shortCode)
+      if (index !== -1) {
+        polls.value.splice(index, 1)
+      }
+    } catch (error) {
+      console.error('Failed to delete poll:', error)
+      throw error
     }
   }
 
@@ -123,18 +165,31 @@ export const usePollStore = defineStore('poll', () => {
     return false
   }
 
-  function addVote(pollId: number, choice: number, checkVoterId: string) {
-    const poll = polls.value.find(p => p.id === pollId)
-    if (poll) {
-      poll.votes.push({
-        id: Date.now(),
-        poll: poll,
-        voterId: checkVoterId,
-        choice,
-        createdAt: new Date(),
-      })
+  async function addVote(shortCode: string, choice: number, checkVoterId: string) {
+    try {
+      const response = await pollApi.submitVote(shortCode, choice, checkVoterId)
+      
+      // Refresh current poll to get updated vote counts
+      if (currentPoll.value?.shortCode === shortCode) {
+        await loadPollByShortCode(shortCode)
+      }
+      
       hasVoted.value = true
+      // Backend returns vote directly
+      return response.data || response
+    } catch (error) {
+      console.error('Failed to vote:', error)
+      throw error
     }
+  }
+
+  function connectToLiveUpdates(shortCode: string) {
+    return pollApi.connectToLiveUpdates(shortCode, (data) => {
+      // Update current poll with live data
+      if (currentPoll.value?.shortCode === shortCode) {
+        currentPoll.value = data
+      }
+    })
   }
 
   function clearPolls() {
@@ -158,14 +213,16 @@ export const usePollStore = defineStore('poll', () => {
     totalVotes,
     
     // Actions
+    loadPolls,
+    loadPollByShortCode,
     setPolls,
     addPoll,
-    updatePoll,
     deletePoll,
     setCurrentPoll,
     setVoterId,
     checkIfVoted,
     addVote,
+    connectToLiveUpdates,
     clearPolls,
   }
 }, {

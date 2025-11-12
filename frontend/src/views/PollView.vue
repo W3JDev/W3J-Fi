@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { usePollStore } from '../store/poll'
-import { generateShortCode } from '../utils/random'
 
 const router = useRouter()
 const pollStore = usePollStore()
 
 const showCreateModal = ref(false)
+const loading = ref(true)
 const pollForm = ref({
   title: '',
   question1: '',
@@ -19,48 +19,61 @@ const pollForm = ref({
   isDraft: false
 })
 
-const allPolls = computed(() => pollStore.polls)
+const allPolls = computed(() => pollStore.polls || [])
 
-const createPoll = () => {
-  const now = new Date()
-  const endTime = new Date(now.getTime() + pollForm.value.duration * 1000)
-
-  pollStore.addPoll({
-    id: Date.now(),
-    title: pollForm.value.title,
-    shortCode: generateShortCode(),
-    startAt: now,
-    endAt: endTime,
-    question1: pollForm.value.question1,
-    question2: pollForm.value.question2,
-    question3: pollForm.value.question3 || undefined,
-    question4: pollForm.value.question4 || undefined,
-    question5: pollForm.value.question5 || undefined,
-    isDraft: pollForm.value.isDraft,
-    votes: []
-  })
-
-  // Reset form
-  pollForm.value = {
-    title: '',
-    question1: '',
-    question2: '',
-    question3: '',
-    question4: '',
-    question5: '',
-    duration: 60,
-    isDraft: false
+onMounted(async () => {
+  try {
+    await pollStore.loadPolls()
+  } catch (err) {
+    console.error('Failed to load polls:', err)
+  } finally {
+    loading.value = false
   }
-  showCreateModal.value = false
+})
+
+const createPoll = async () => {
+  try {
+    await pollStore.addPoll({
+      title: pollForm.value.title,
+      question1: pollForm.value.question1,
+      question2: pollForm.value.question2,
+      question3: pollForm.value.question3 || undefined,
+      question4: pollForm.value.question4 || undefined,
+      question5: pollForm.value.question5 || undefined,
+      duration: pollForm.value.duration,
+      isDraft: pollForm.value.isDraft
+    })
+
+    // Reset form
+    pollForm.value = {
+      title: '',
+      question1: '',
+      question2: '',
+      question3: '',
+      question4: '',
+      question5: '',
+      duration: 60,
+      isDraft: false
+    }
+    showCreateModal.value = false
+  } catch (err) {
+    console.error('Failed to create poll:', err)
+    alert('Failed to create poll. Please try again.')
+  }
 }
 
 const viewPoll = (poll: any) => {
   router.push(`/poll/${poll.shortCode}`)
 }
 
-const deletePoll = (poll: any) => {
+const deletePoll = async (poll: any) => {
   if (confirm(`Delete poll "${poll.title}"?`)) {
-    pollStore.deletePoll(poll.id)
+    try {
+      await pollStore.deletePoll(poll.shortCode)
+    } catch (err) {
+      console.error('Failed to delete poll:', err)
+      alert('Failed to delete poll. Please try again.')
+    }
   }
 }
 
@@ -78,6 +91,22 @@ const getPollStatus = (poll: any) => {
 
 const goBack = () => {
   router.push('/')
+}
+
+const copyVoteLink = async (poll: any) => {
+  const voteUrl = `${window.location.origin}/poll/${poll.shortCode}`
+  try {
+    await navigator.clipboard.writeText(voteUrl)
+    alert(`✅ Vote link copied!\n\nShare this link for people to vote:\n${voteUrl}`)
+  } catch (err) {
+    // Fallback for browsers that don't support clipboard API
+    prompt('Copy this voting link:', voteUrl)
+  }
+}
+
+const showQRCode = (poll: any) => {
+  // Open QR code in new window/tab for easy scanning
+  window.open(`/poll/${poll.shortCode}/qr`, '_blank', 'width=600,height=700')
 }
 </script>
 
@@ -151,9 +180,19 @@ const goBack = () => {
               <p><strong>Ends:</strong> {{ formatDate(poll.endAt) }}</p>
             </div>
 
-            <div class="card-actions justify-end mt-4">
-              <button @click="viewPoll(poll)" class="btn btn-sm btn-primary">View</button>
-              <button @click="deletePoll(poll)" class="btn btn-sm btn-error">Delete</button>
+            <div class="card-actions justify-between mt-4 flex-wrap gap-2">
+              <div class="flex gap-2">
+                <button @click="copyVoteLink(poll)" class="btn btn-sm btn-info" title="Copy vote link">
+                  🔗 Share
+                </button>
+                <button @click="showQRCode(poll)" class="btn btn-sm btn-accent" title="Show QR code">
+                  📱 QR
+                </button>
+              </div>
+              <div class="flex gap-2">
+                <button @click="viewPoll(poll)" class="btn btn-sm btn-primary">View</button>
+                <button @click="deletePoll(poll)" class="btn btn-sm btn-error">Delete</button>
+              </div>
             </div>
           </div>
         </div>
